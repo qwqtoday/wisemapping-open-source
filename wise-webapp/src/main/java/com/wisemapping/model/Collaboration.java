@@ -19,9 +19,12 @@
 package com.wisemapping.model;
 
 
+import org.jetbrains.annotations.Nullable;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "COLLABORATION")
@@ -43,7 +46,7 @@ public class Collaboration implements Serializable {
     private Collaborator collaborator;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "properties_id", nullable = false, unique = true)
+    @JoinColumn(name = "properties_id", nullable = true, unique = true)
     private CollaborationProperties collaborationProperties = new CollaborationProperties();
 
     public Collaboration() {
@@ -100,12 +103,13 @@ public class Collaboration implements Serializable {
         this.collaborator = collaborator;
     }
 
-    @NotNull
+
+    @Nullable
     public CollaborationProperties getCollaborationProperties() {
         return this.collaborationProperties;
     }
 
-    public void setCollaborationProperties(@NotNull CollaborationProperties collaborationProperties) {
+    public void setCollaborationProperties(@Nullable CollaborationProperties collaborationProperties) {
         this.collaborationProperties = collaborationProperties;
     }
 
@@ -122,16 +126,14 @@ public class Collaboration implements Serializable {
         Collaboration that = (Collaboration) o;
 
         if (id != that.id) return false;
-        if (collaborator != null ? !collaborator.equals(that.collaborator) : that.collaborator != null) return false;
-        if (mindMap != null ? !mindMap.equals(that.mindMap) : that.mindMap != null) return false;
+        if (!Objects.equals(collaborator, that.collaborator)) return false;
+        if (!Objects.equals(mindMap, that.mindMap)) return false;
         return role == that.role;
     }
 
     @Override
     public int hashCode() {
-        int result = id ^ (id >>> 32);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (mindMap != null ? mindMap.hashCode() : 0);
-        return result;
+        //https://thorben-janssen.com/ultimate-guide-to-implementing-equals-and-hashcode-with-hibernate/
+        return 13;
     }
 }

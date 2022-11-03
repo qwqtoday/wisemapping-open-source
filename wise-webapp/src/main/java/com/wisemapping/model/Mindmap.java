@@ -23,6 +23,8 @@ import com.wisemapping.exceptions.InvalidMindmapException;
 import com.wisemapping.exceptions.WiseMappingException;
 import com.wisemapping.util.ZipUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +65,12 @@ public class Mindmap implements Serializable {
     @Column(name = "public")
     private boolean isPublic;
 
-    @OneToMany(mappedBy = "mindMap", orphanRemoval = true, cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "mindMap", orphanRemoval = true, cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.JOIN)
     private Set<Collaboration> collaborations = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @Fetch(FetchMode.JOIN)
     @JoinTable(
             name = "R_LABEL_MINDMAP",
             joinColumns = @JoinColumn(name = "mindmap_id"),
@@ -79,12 +83,8 @@ public class Mindmap implements Serializable {
     @Basic(fetch = FetchType.LAZY)
     private byte[] zippedXml;
 
-    //~ Constructors .........................................................................................
-
     public Mindmap() {
     }
-
-    //~ Methods ..............................................................................................
 
     public void setUnzipXml(@NotNull byte[] value) {
         try {
@@ -142,7 +142,13 @@ public class Mindmap implements Serializable {
     }
 
     public void removedCollaboration(@NotNull Collaboration collaboration) {
-        collaborations.add(collaboration);
+        // https://stackoverflow.com/questions/25125210/hibernate-persistentset-remove-operation-not-working
+        this.collaborations.remove(collaboration);
+        collaboration.setMindMap(null);
+    }
+
+    public void removedCollaboration(@NotNull Set<Collaboration> collaborations) {
+        this.collaborations.removeAll(collaborations);
     }
 
     @NotNull
@@ -177,15 +183,14 @@ public class Mindmap implements Serializable {
         return result;
     }
 
+    public boolean isCreator(@NotNull User user) {
+        return this.getCreator() != null && this.getCreator().identityEquality(user);
+    }
+
     public boolean isPublic() {
         return isPublic;
     }
 
-    //@Todo: This is a hack to overcome some problem with JS EL. For some reason, ${mindmap.public} fails as not supported.
-    // More research is needed...
-    public boolean isAccessible() {
-        return isPublic();
-    }
 
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
@@ -309,9 +314,18 @@ public class Mindmap implements Serializable {
         final StringBuilder result = new StringBuilder();
         result.append("<map version=\"tango\">");
         result.append("<topic central=\"true\" text=\"");
-        result.append(StringEscapeUtils.escapeXml(title));
+        result.append(escapeXmlAttribute(title));
         result.append("\"/></map>");
         return result.toString();
+    }
+
+    static private String escapeXmlAttribute(String attValue) {
+        // Hack: Find out of the box function.
+        String result = attValue.replace("&", "&amp;");
+        result = result.replace("<", "&lt;");
+        result = result.replace("gt", "&gt;");
+        result = result.replace("\"", "&quot;");
+        return result;
     }
 
     public Mindmap shallowClone() {
@@ -342,18 +356,6 @@ public class Mindmap implements Serializable {
             }
         }
         return false;
-    }
-
-    @Nullable
-    public Label findLabel(int labelId) {
-        Label result = null;
-        for (Label label : this.labels) {
-            if (label.getId() == labelId) {
-                result = label;
-                break;
-            }
-        }
-        return result;
     }
 
     public void removeLabel(@NotNull final Label label) {

@@ -11,7 +11,7 @@ There are multiple ways to run WiseMapping depending on your database configurat
 
 > $ docker run -it --rm -p 8080:8080 wisemapping/wisemapping:latest
 
-Then, open your browser at `http://localhost:8888`. A default user is available for testing `test@wisemapping.com` and password `test`.
+Then, open your browser at `http://localhost:8888`. A default user is available for testing `test@wisemapping.org` and password `test`.
 
 ***This option, all changes will be lost once the image is stopped. Use it for testing only*** 
 
@@ -42,7 +42,7 @@ Depending on the database your want to configure, you can create initialization 
 The next step is configure the WiseMapping for the database and credentials. 
 Download `app.properties` configuration file and configure the required sections:
 
-> $ curl https://bitbucket.org/wisemapping/wisemapping-open-source/raw/644b7078d790220c7844b732a83d45495f11d64e/wise-webapp/src/main/webapp/WEB-INF/app.properties 
+> $ curl https://bitbucket.org/wisemapping/wisemapping-open-source/src/master/wise-webapp/src/main/webapp/WEB-INF/app.properties
 
 ### Starting the application
 
