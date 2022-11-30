@@ -58,6 +58,19 @@ Check out the [docker section](./docker/README.)
 Individual test result reports can be found in wisemapping-open-source/wise-webapp/target/failsafe-reports/index.html
 Test coverage report of unit and integration test can be found in wisemapping-open-source/wise-webapp/target/site/jacoco and wisemapping-open-source/wise-webapp/target/site/jacoco-it folders. Coverage report is generated in the verify phase of [lifecicle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#introduction-to-the-build-lifecyclea) using [jacoco](https://www.jacoco.org/jacoco/trunk/doc/maven.html)
 
+
+## Google authorization
+
+You must configure the following properties (app.properties) in order to get google authorization working
+   * `google.oauth2.callbackUrl`: url where google will redirect after user authentication, tipically {frontendBaseUrl}/c/registration-google. Also, this url must be defined in google app configuration
+   * `google.oauth2.clientId`: client id from google app
+   * `google.oauth2.clientSecret`: client secret from google app
+
+Be sure your google app has the following scopes allowed:
+   * `https://www.googleapis.com/auth/userinfo.profile`
+   * `https://www.googleapis.com/auth/userinfo.email`
+  
+
 ## Members
 
 ### Founders
