@@ -79,7 +79,7 @@ After that, in Credentials, you must create an `Oauth Client Id` credential
    * Authorized JavaScript origins: list of authorized domains from which to redirect to Google. Ex: `https://wisemaping.com`, `https://wisemapping-testing.com:8080` 
    * Authorized redirect URIs: list of allowed urls to which google will redirect after authenticating . Ex: `https://wisemaping.com/c/registration-google`, `https://wisemapping-testing.com:8080/c/registration-google`
 
-After credential is created, google will show you the clientId and clientSecret to configure your application. For productive applications, you must **publish** your application. Then, Google starts a validation process.
+After credential was created, Google will show you the clientId and clientSecret to configure your application. For productive applications, you must **publish** your application, this is a validation process with Google.
 
 ## Members
 
