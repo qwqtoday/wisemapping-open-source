@@ -66,20 +66,20 @@ You must configure the following wisemapping properties (app.properties) in orde
    * `google.oauth2.clientId`: client id from google app
    * `google.oauth2.clientSecret`: client secret from google app
 
-First you must create a google application and complete all the information required by Google. Here are the most important properties.
+You must create a Google Application in [Google Cloud](https://console.cloud.google.com) and complete all the information required by Google. Here are the most important properties.
 
 Oauth consent screen
    * Authorized domains: wisemapping domain (ex: wisemapping.com), and you can add domains of other environments if needed
    * Permissions
       * `https://www.googleapis.com/auth/userinfo.profile`
       * `https://www.googleapis.com/auth/userinfo.email`
-   * Test users: emails for testing, those can be used before the application is validated by google
+   * Test users: emails for testing, those can be used before the application is validated by Google
   
 After that, in Credentials, you must create an `Oauth Client Id` credential
-   * Authorized JavaScript origins: list of authorized domains from which to redirect to google. Ex: `https://wisemaping.com`, `https://wisemapping-testing.com:8080` 
+   * Authorized JavaScript origins: list of authorized domains from which to redirect to Google. Ex: `https://wisemaping.com`, `https://wisemapping-testing.com:8080` 
    * Authorized redirect URIs: list of allowed urls to which google will redirect after authenticating . Ex: `https://wisemaping.com/c/registration-google`, `https://wisemapping-testing.com:8080/c/registration-google`
 
-After credential is created, google will show you the clientId and clientSecret to configure your application.
+After credential is created, google will show you the clientId and clientSecret to configure your application. For productive applications, you must **publish** your application. Then, Google starts a validation process.
 
 ## Members
 
