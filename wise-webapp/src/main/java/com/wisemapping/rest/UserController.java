@@ -23,6 +23,7 @@ import com.wisemapping.exceptions.WiseMappingException;
 import com.wisemapping.model.AuthenticationType;
 import com.wisemapping.model.User;
 import com.wisemapping.rest.model.RestOath2CallbackResponse;
+import com.wisemapping.rest.model.RestResetPasswordResponse;
 import com.wisemapping.rest.model.RestUserRegistration;
 import com.wisemapping.service.*;
 import com.wisemapping.validator.Messages;
@@ -129,9 +130,9 @@ public class UserController extends BaseController {
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/users/resetPassword", produces = { "application/json" })
 	@ResponseStatus(value = HttpStatus.OK)
-	public void resetPassword(@RequestParam String email) throws InvalidAuthSchemaException, EmailNotExistsException {
+	public RestResetPasswordResponse resetPassword(@RequestParam String email) throws InvalidAuthSchemaException, EmailNotExistsException {
 		try {
-			userService.resetPassword(email);
+			return userService.resetPassword(email);
 		} catch (InvalidUserEmailException e) {
 			throw new EmailNotExistsException(e);
 		}

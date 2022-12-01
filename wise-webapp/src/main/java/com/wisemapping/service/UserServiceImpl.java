@@ -23,6 +23,8 @@ import com.wisemapping.exceptions.InvalidMindmapException;
 import com.wisemapping.exceptions.WiseMappingException;
 import com.wisemapping.mail.NotificationService;
 import com.wisemapping.model.*;
+import com.wisemapping.rest.model.RestResetPasswordAction;
+import com.wisemapping.rest.model.RestResetPasswordResponse;
 import com.wisemapping.service.google.GoogleAccountBasicData;
 import com.wisemapping.service.google.GoogleService;
 import com.wisemapping.util.VelocityEngineUtils;
@@ -58,10 +60,15 @@ public class UserServiceImpl
     }
 
     @Override
-    public void resetPassword(@NotNull String email)
+    public RestResetPasswordResponse resetPassword(@NotNull String email)
             throws InvalidUserEmailException, InvalidAuthSchemaException {
         final User user = userManager.getUserBy(email);
         if (user != null) {
+			RestResetPasswordResponse response = new RestResetPasswordResponse();
+			if (user.getAuthenticationType().equals(AuthenticationType.GOOGLE_OAUTH2)) {
+				response.setAction(RestResetPasswordAction.OAUTH2_USER);
+				return response;
+			}
 
             if (user.getAuthenticationType() != AuthenticationType.DATABASE) {
                 throw new InvalidAuthSchemaException("Could not change password for " + user.getAuthenticationType().getCode());
@@ -74,6 +81,9 @@ public class UserServiceImpl
 
             // Send an email with the new temporal password ...
             notificationService.resetPassword(user, password);
+
+			response.setAction(RestResetPasswordAction.EMAIL_SENT);
+			return response;
         } else {
             throw new InvalidUserEmailException("The email '" + email + "' does not exists.");
         }

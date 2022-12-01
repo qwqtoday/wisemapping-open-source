@@ -20,6 +20,8 @@ package com.wisemapping.service;
 
 import com.wisemapping.exceptions.WiseMappingException;
 import com.wisemapping.model.User;
+import com.wisemapping.rest.model.RestResetPasswordResponse;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface UserService {
@@ -40,7 +42,7 @@ public interface UserService {
 
     void updateUser(User user);
 
-    void resetPassword(@NotNull String email) throws InvalidUserEmailException, InvalidAuthSchemaException;
+    RestResetPasswordResponse resetPassword(@NotNull String email) throws InvalidUserEmailException, InvalidAuthSchemaException;
 
     void removeUser(@NotNull User user);
 
