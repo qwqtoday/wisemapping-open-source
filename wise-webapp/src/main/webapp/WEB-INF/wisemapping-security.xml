@@ -50,6 +50,7 @@
         <sec:intercept-url pattern="/c/registration" access="hasRole('ANONYMOUS')"/>
         <sec:intercept-url pattern="/c/registration-success" access="hasRole('ANONYMOUS')"/>
         <sec:intercept-url pattern="/c/registration-google" access="permitAll"/>
+        <sec:intercept-url pattern="/c/empty" access="permitAll"/>
         <sec:intercept-url pattern="/c/forgot-password" access="hasRole('ANONYMOUS')"/>
         <sec:intercept-url pattern="/c/forgot-password-success" access="hasRole('ANONYMOUS')"/>
 

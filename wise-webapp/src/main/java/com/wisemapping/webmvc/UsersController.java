@@ -44,6 +44,11 @@ public class UsersController {
         return new ModelAndView("registration-google");
     }
 
+    @RequestMapping(value = "empty", method = RequestMethod.GET)
+    public ModelAndView showEmptyPage() {
+        return new ModelAndView("empty");
+    }
+
     @RequestMapping(value = "registration", method = RequestMethod.GET)
     public ModelAndView showRegistrationPage() {
         return new ModelAndView("registration");
