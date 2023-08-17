@@ -22,7 +22,7 @@
 
     <bean id="updateSecurityAdvisor"
           class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
-        <property name="advice" ref="updateSecurityAdvice"/>
+<!--        <property name="advice" ref="updateSecurityAdvice"/>-->
         <property name="mappedNames">
             <list>
                 <value>save*</value>

@@ -20,9 +20,9 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
+//    @Autowired
     UserService userService;
 
     @Value("${admin.user}")
@@ -122,11 +122,11 @@ public class SecurityConfig {
 
         return http.authorizeHttpRequests(
                 (auth) ->
-                        auth.requestMatchers(restfullMapper.pattern("/static/**")).permitAll().
-                                requestMatchers(restfullMapper.pattern("/css/**")).permitAll().
-                                requestMatchers(restfullMapper.pattern("/js/**")).permitAll().
-                                requestMatchers(restfullMapper.pattern("/images/**")).permitAll().
-                                requestMatchers(restfullMapper.pattern("/*")).permitAll()
+                        auth.requestMatchers("/static/**").permitAll().
+                                requestMatchers("/css/**").permitAll().
+                                requestMatchers("/js/**").permitAll().
+                                requestMatchers("/images/**").permitAll().
+                                requestMatchers("/*").permitAll()
         ).build();
     }
 

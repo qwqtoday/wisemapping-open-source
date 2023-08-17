@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="mindmapSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-        <property name="dataSource" ref="wiseDataSource"/>
+        <property name="dataSource" ref="dataSource"/>
         <property name="annotatedClasses">
             <list>
                 <value>com.wisemapping.model.User</value>

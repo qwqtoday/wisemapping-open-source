@@ -21,11 +21,6 @@ package com.wisemapping.dao;
 import com.wisemapping.model.*;
 import com.wisemapping.util.ZipUtils;
 import jakarta.persistence.Query;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Junction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -62,13 +57,14 @@ public class MindmapManagerImpl
 
     @Override
     public List<MindMapHistory> getHistoryFrom(int mindmapId) {
-        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
-        hibernateCriteria.add(Restrictions.eq("mindmapId", mindmapId));
-        hibernateCriteria.addOrder(Order.desc("creationTime"));
-
-        // This line throws errors in some environments, so getting all history and taking firsts 10 records
-        hibernateCriteria.setMaxResults(30);
-        return hibernateCriteria.list();
+//        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
+//        hibernateCriteria.add(Restrictions.eq("mindmapId", mindmapId));
+//        hibernateCriteria.addOrder(Order.desc("creationTime"));
+//
+//        // This line throws errors in some environments, so getting all history and taking firsts 10 records
+//        hibernateCriteria.setMaxResults(30);
+//        return hibernateCriteria.list();
+        return null;
     }
 
     @Override
@@ -83,11 +79,11 @@ public class MindmapManagerImpl
 
     @Override
     public void purgeHistory(int mapId) throws IOException {
-        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
-        hibernateCriteria.add(Restrictions.eq("mindmapId", mapId));
-        hibernateCriteria.addOrder(Order.desc("creationTime"));
+//        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
+//        hibernateCriteria.add(Restrictions.eq("mindmapId", mapId));
+//        hibernateCriteria.addOrder(Order.desc("creationTime"));
 
-        final List<MindMapHistory> historyList = hibernateCriteria.list();
+        final List<MindMapHistory> historyList = null;
 
         final Mindmap mindmap = this.getMindmapById(mapId);
         if (mindmap != null) {
@@ -127,30 +123,31 @@ public class MindmapManagerImpl
 
     @Override
     public List<Mindmap> search(MindMapCriteria criteria, int maxResult) {
-        final Criteria hibernateCriteria = currentSession().createCriteria(Mindmap.class);
-        //always search public maps
-        hibernateCriteria.add(Restrictions.like("public", Boolean.TRUE));
-
-        if (criteria != null) {
-            final Junction junction;
-            if (criteria.isOrCriteria()) {
-                junction = Restrictions.disjunction();
-            } else {
-                junction = Restrictions.conjunction();
-            }
-
-            if (criteria.getTitle() != null && criteria.getTitle().length() > 0) {
-                final SimpleExpression titleRestriction = Restrictions.like("title", "%" + criteria.getTitle() + "%");
-                junction.add(titleRestriction);
-            }
-
-            if (criteria.getDescription() != null && criteria.getDescription().length() > 0) {
-                final SimpleExpression descriptionRestriction = Restrictions.like("description", "%" + criteria.getDescription() + "%");
-                junction.add(descriptionRestriction);
-            }
-            hibernateCriteria.add(junction);
-        }
-        return hibernateCriteria.list();
+//        final Criteria hibernateCriteria = currentSession().createCriteria(Mindmap.class);
+//        //always search public maps
+//        hibernateCriteria.add(Restrictions.like("public", Boolean.TRUE));
+//
+//        if (criteria != null) {
+//            final Junction junction;
+//            if (criteria.isOrCriteria()) {
+//                junction = Restrictions.disjunction();
+//            } else {
+//                junction = Restrictions.conjunction();
+//            }
+//
+//            if (criteria.getTitle() != null && criteria.getTitle().length() > 0) {
+//                final SimpleExpression titleRestriction = Restrictions.like("title", "%" + criteria.getTitle() + "%");
+//                junction.add(titleRestriction);
+//            }
+//
+//            if (criteria.getDescription() != null && criteria.getDescription().length() > 0) {
+//                final SimpleExpression descriptionRestriction = Restrictions.like("description", "%" + criteria.getDescription() + "%");
+//                junction.add(descriptionRestriction);
+//            }
+//            hibernateCriteria.add(junction);
+//        }
+//        return hibernateCriteria.list();
+        return null;
     }
 
     @Override
@@ -221,17 +218,17 @@ public class MindmapManagerImpl
 
     @Override
     public void removeMindmap(@NotNull final Mindmap mindmap) {
-        // Delete history first ...
-        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
-        hibernateCriteria.add(Restrictions.eq("mindmapId", mindmap.getId()));
-        final List list = hibernateCriteria.list();
-        getHibernateTemplate().deleteAll(list);
-
-        // Remove collaborations ...
-        mindmap.removedCollaboration(mindmap.getCollaborations());
-
-        // Delete mindmap ....
-        getHibernateTemplate().delete(mindmap);
+//        // Delete history first ...
+//        final Criteria hibernateCriteria = currentSession().createCriteria(MindMapHistory.class);
+//        hibernateCriteria.add(Restrictions.eq("mindmapId", mindmap.getId()));
+//        final List list = hibernateCriteria.list();
+//        getHibernateTemplate().deleteAll(list);
+//
+//        // Remove collaborations ...
+//        mindmap.removedCollaboration(mindmap.getCollaborations());
+//
+//        // Delete mindmap ....
+//        getHibernateTemplate().delete(mindmap);
     }
 
     private void saveHistory(@NotNull final Mindmap mindMap) {
