@@ -26,6 +26,7 @@ import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -76,19 +77,20 @@ public class UserManagerImpl
 
     @Override
     public Collaborator getCollaboratorBy(final String email) {
-        final Collaborator cola;
-        Query query = getSession().createQuery("from com.wisemapping.model.Collaborator colaborator where " +
-                "email=:email");
+        final Collaborator result;
+        Session session = getSession();
+        final SelectionQuery<Collaborator> query = session.createSelectionQuery("from com.wisemapping.model.Collaborator colaborator where " +
+                "email=:email", Collaborator.class);
         query.setParameter("email", email);
 
-        final List<User> cols = query.list();
+        final List<Collaborator> cols = query.getResultList();
         if (cols != null && !cols.isEmpty()) {
             assert cols.size() == 1 : "More than one colaborator with the same email!";
-            cola = cols.get(0);
+            result = cols.get(0);
         } else {
-            cola = null;
+            result = null;
         }
-        return cola;
+        return result;
     }
 
     @Nullable
@@ -163,8 +165,8 @@ public class UserManagerImpl
     public User getUserByActivationCode(long code) {
         final User user;
 
-        var query = getSession().createQuery("from com.wisemapping.model.User user where " +
-                "activationCode=:activationCode");
+        final SelectionQuery<User> query = getSession().createSelectionQuery("from com.wisemapping.model.User user where " +
+                "activationCode=:activationCode", User.class);
         query.setParameter("activationCode", code);
         final List users = query.list();
 

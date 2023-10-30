@@ -20,13 +20,13 @@ package com.wisemapping.dao;
 
 import com.wisemapping.model.*;
 import jakarta.annotation.Resource;
-import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaDelete;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.SelectionQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
@@ -43,7 +43,7 @@ public class MindmapManagerImpl
     @Override
     public Collaborator findCollaborator(@NotNull final String email) {
         final Collaborator collaborator;
-        Query query = getSession().createQuery("from com.wisemapping.model.Collaborator collaborator where email=:email");
+        final SelectionQuery<Collaborator> query = getSession().createSelectionQuery("from com.wisemapping.model.Collaborator collaborator where email=:email", Collaborator.class);
         query.setParameter("email", email);
 
         final List<Collaborator> collaborators = query.getResultList();
@@ -93,8 +93,8 @@ public class MindmapManagerImpl
     @Override
     public List<Mindmap> findMindmapByUser(@NotNull User user) {
 
-        final Query query = getSession()
-                .createQuery("from com.wisemapping.model.Mindmap m where m.id in (select c.mindMap.id from com.wisemapping.model.Collaboration as c where c.collaborator.id=:collabId )");
+        final SelectionQuery<Mindmap> query = getSession()
+                .createSelectionQuery("from com.wisemapping.model.Mindmap m where m.id in (select c.mindMap.id from com.wisemapping.model.Collaboration as c where c.collaborator.id=:collabId )", Mindmap.class);
         query.setParameter("collabId", user.getId());
 
         return query.getResultList();
@@ -102,7 +102,7 @@ public class MindmapManagerImpl
 
     @Override
     public List<Collaboration> findCollaboration(final int collaboratorId) {
-        Query query = getSession().createQuery("from com.wisemapping.model.Collaboration c where c.collaborator.id=:collaboratorId");
+        final SelectionQuery<Collaboration> query = getSession().createSelectionQuery("from com.wisemapping.model.Collaboration c where c.collaborator.id=:collaboratorId", Collaboration.class);
         query.setParameter("collaboratorId", collaboratorId);
         return query.getResultList();
     }
@@ -136,7 +136,7 @@ public class MindmapManagerImpl
     @Override
     public Mindmap getMindmapByTitle(final String title, final User user) {
         final Mindmap result;
-        Query query = getSession().createQuery("from com.wisemapping.model.Mindmap wisemapping where title=:title and creator=:creator");
+        final SelectionQuery<Mindmap> query = getSession().createSelectionQuery("from com.wisemapping.model.Mindmap wisemapping where title=:title and creator=:creator", Mindmap.class);
         query.setParameter("title", title);
         query.setParameter("creator", user);
 

@@ -22,7 +22,7 @@ import com.wisemapping.model.User;
 import jakarta.annotation.Resource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
+import org.hibernate.query.SelectionQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
@@ -51,9 +51,8 @@ public class LabelManagerImpl
 
     @NotNull
     @Override
-    @SuppressWarnings("unchecked")
     public List<Label> getAllLabels(@NotNull final User user) {
-        final Query query = getSession().createQuery("from com.wisemapping.model.Label wisemapping where creator=:creatorId");
+        final SelectionQuery<Label> query = getSession().createSelectionQuery("from com.wisemapping.model.Label wisemapping where creator=:creatorId", Label.class);
         query.setParameter("creatorId", user);
         return query.list();
     }
@@ -61,16 +60,19 @@ public class LabelManagerImpl
     @Nullable
     @Override
     public Label getLabelById(int id, @NotNull final User user) {
-        var query = getSession().createQuery("from com.wisemapping.model.Label wisemapping where id=:id and creator=:creator");
+        final Session session = getSession();
+        final SelectionQuery<Label> query = session.createSelectionQuery("from com.wisemapping.model.Label wisemapping where id=:id and creator=:creator", Label.class);
         query.setParameter("id", id);
         query.setParameter("creator", user);
-        return getFirst(query.list());
+
+        final List<Label> resultList = query.getResultList();
+        return getFirst(resultList);
     }
 
     @Nullable
     @Override
     public Label getLabelByTitle(@NotNull String title, @NotNull final User user) {
-        var query = getSession().createQuery("from com.wisemapping.model.Label wisemapping where title=:title and creator=:creator");
+        final SelectionQuery<Label> query = getSession().createSelectionQuery("from com.wisemapping.model.Label wisemapping where title=:title and creator=:creator", Label.class);
         query.setParameter("title", title);
         query.setParameter("creator", user);
         return getFirst(query.list());
@@ -82,7 +84,7 @@ public class LabelManagerImpl
     }
 
     @Nullable
-    private Label getFirst(List<Label> labels) {
+    private Label getFirst(final List<Label> labels) {
         Label result = null;
         if (labels != null && !labels.isEmpty()) {
             result = labels.get(0);
