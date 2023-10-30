@@ -117,13 +117,13 @@ public class MindmapManagerImpl
     @Override
     public void removeCollaboration(Collaboration collaboration) {
         final Session session = getSession();
-        session.delete(collaboration);
+        session.remove(collaboration);
     }
 
     @Override
     public void removeCollaborator(@NotNull Collaborator collaborator) {
         final Session session = getSession();
-        session.delete(collaborator);
+        session.remove(collaborator);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class MindmapManagerImpl
     @Override
     public void updateMindmap(@NotNull Mindmap mindMap, boolean saveHistory) {
         assert mindMap != null : "Save Mindmap: Mindmap is required!";
-        getSession().saveOrUpdate(mindMap);
+        getSession().merge(mindMap);
         if (saveHistory) {
             saveHistory(mindMap);
         }
@@ -186,7 +186,7 @@ public class MindmapManagerImpl
         mindmap.removedCollaboration(mindmap.getCollaborations());
 
         // Delete mindmap ....
-        getSession().delete(mindmap);
+        getSession().remove(mindmap);
     }
 
     private void saveHistory(@NotNull final Mindmap mindMap) {
@@ -196,6 +196,6 @@ public class MindmapManagerImpl
         history.setCreationTime(Calendar.getInstance());
         history.setEditor(mindMap.getLastEditor());
         history.setMindmapId(mindMap.getId());
-        getSession().saveOrUpdate(history);
+        getSession().merge(history);
     }
 }

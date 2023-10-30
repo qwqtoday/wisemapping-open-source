@@ -80,7 +80,7 @@ public class LabelManagerImpl
 
     @Override
     public void removeLabel(@NotNull Label label) {
-        getSession().delete(label);
+        getSession().remove(label);
     }
 
     @Nullable

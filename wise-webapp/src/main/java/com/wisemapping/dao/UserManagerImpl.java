@@ -134,13 +134,13 @@ public class UserManagerImpl
         }
 
         // Delete old user ...
-        session.delete(collaborator);
+        session.remove(collaborator);
         return user;
     }
 
     @Override
     public void removeUser(@NotNull final User user) {
-        getSession().delete(user);
+        getSession().remove(user);
     }
 
     public void auditLogin(@NotNull AccessAuditory accessAuditory) {
@@ -166,12 +166,12 @@ public class UserManagerImpl
         final SelectionQuery<User> query = getSession().createSelectionQuery("from com.wisemapping.model.User user where " +
                 "activationCode=:activationCode", User.class);
         query.setParameter("activationCode", code);
-        final List users = query.list();
 
+        final List<User> users = query.getResultList();
         if (users != null && !users.isEmpty()) {
 
             assert users.size() == 1 : "More than one user with the same username!";
-            user = (User) users.get(0);
+            user = users.get(0);
         } else {
             user = null;
         }
