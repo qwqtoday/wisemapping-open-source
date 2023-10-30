@@ -25,7 +25,6 @@ import jakarta.annotation.Resource;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.hibernate.query.SelectionQuery;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,9 +47,8 @@ public class UserManagerImpl
         this.passwordEncoder = passwordEncoder;
     }
 
-    @SuppressWarnings("unchecked")
     public List<User> getAllUsers() {
-        return getSession().createQuery("from com.wisemapping.model.User user").list();
+        return getSession().createSelectionQuery("from com.wisemapping.model.User user", User.class).getResultList();
     }
 
     private Session getSession() {
@@ -63,10 +61,10 @@ public class UserManagerImpl
     public User getUserBy(@NotNull final String email) {
         User user = null;
 
-        var query = getSession().createQuery("from com.wisemapping.model.User colaborator where email=:email");
+        SelectionQuery<User> query = getSession().createSelectionQuery("from com.wisemapping.model.User colaborator where email=:email",User.class);
         query.setParameter("email", email);
 
-        final List<User> users = query.list();
+        final List<User> users = query.getResultList();
         if (users != null && !users.isEmpty()) {
             assert users.size() == 1 : "More than one user with the same email!";
             user = users.get(0);
@@ -113,7 +111,7 @@ public class UserManagerImpl
         } else {
             user.setPassword("");
         }
-        getSession().saveOrUpdate(user);
+        getSession().persist(user);
     }
 
     @Override
@@ -123,7 +121,7 @@ public class UserManagerImpl
         // Migrate from previous temporal collab to new user ...
         final Session session = getSession();
         collaborator.setEmail(collaborator.getEmail() + "_toRemove");
-        session.saveOrUpdate(collaborator);
+        session.merge(collaborator);
         session.flush();
 
         // Save all new...
@@ -147,7 +145,7 @@ public class UserManagerImpl
 
     public void auditLogin(@NotNull AccessAuditory accessAuditory) {
         assert accessAuditory != null : "accessAuditory is null";
-        getSession().save(accessAuditory);
+        getSession().persist(accessAuditory);
     }
 
     public void updateUser(@NotNull User user) {
@@ -159,7 +157,7 @@ public class UserManagerImpl
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        getSession().update(user);
+        getSession().merge(user);
     }
 
     public User getUserByActivationCode(long code) {

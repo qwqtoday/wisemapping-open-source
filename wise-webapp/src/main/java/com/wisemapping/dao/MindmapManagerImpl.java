@@ -87,7 +87,7 @@ public class MindmapManagerImpl
     @Override
     public void updateCollaboration(@NotNull Collaboration collaboration) {
         final Session session = getSession();
-        session.save(collaboration);
+        session.persist(collaboration);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class MindmapManagerImpl
     public void addCollaborator(@NotNull Collaborator collaborator) {
         final Session session = getSession();
         assert collaborator != null : "ADD MINDMAP COLLABORATOR: Collaborator is required!";
-        session.save(collaborator);
+        session.persist(collaborator);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class MindmapManagerImpl
     @Override
     public void saveMindmap(Mindmap mindMap) {
         assert mindMap != null : "Save Mindmap: Mindmap is required!";
-        getSession().save(mindMap);
+        getSession().persist(mindMap);
     }
 
     @Override

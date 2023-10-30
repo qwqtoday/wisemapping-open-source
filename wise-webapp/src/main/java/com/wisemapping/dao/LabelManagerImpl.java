@@ -42,7 +42,7 @@ public class LabelManagerImpl
 
     @Override
     public void saveLabel(@NotNull final Label label) {
-        getSession().save(label);
+        getSession().persist(label);
     }
 
     private Session getSession() {
